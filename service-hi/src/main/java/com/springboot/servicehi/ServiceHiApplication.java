@@ -1,6 +1,7 @@
 package com.springboot.servicehi;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,6 +13,9 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import java.nio.charset.Charset;
 
 @SpringBootApplication
 @EnableEurekaClient
@@ -37,5 +41,16 @@ public class ServiceHiApplication {
 
     public String hierror(String name) {
         return "hi," + name + ",sorry,error!";
+    }
+
+    @RequestMapping("/testRest")
+    public String testRest(){
+        RestTemplate restTemplate = new RestTemplate();
+        String restResult = restTemplate.getForObject("https://www.baidu.com", String.class);
+        byte[] resultBytes = restResult.getBytes();
+        String target = new String(resultBytes, Charset.defaultCharset());
+
+        System.out.println(target);
+        return target;
     }
 }
